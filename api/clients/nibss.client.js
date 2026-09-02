@@ -1,6 +1,6 @@
 import nibssConfig from '../config/nibss.js';
 import { ExternalApiError } from '../utils/errors.js'
-import { isTokenInvalid } from '../utils/jwt.js';
+import { isTokenExpired } from '../utils/jwt.js';
 
 class NibssClient {
     constructor(nibssConfig) {
@@ -36,7 +36,7 @@ class NibssClient {
     }
 
     async getAccessToken() {
-        if (isTokenInvalid(this.accessToken)) {         
+        if (isTokenExpired(this.accessToken)) {         
             const data = await this.request(
                 '/api/auth/token',
                 {
