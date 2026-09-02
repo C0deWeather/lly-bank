@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-function isTokenInvalid(token) {
+function isTokenExpired(token) {
     if (token === null) {
         return true;
     }
@@ -12,4 +12,4 @@ function isTokenInvalid(token) {
     }
     return false;
 }
-export { isTokenInvalid };
+export { isTokenExpired };
