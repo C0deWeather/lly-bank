@@ -8,7 +8,7 @@ class NibssClient {
         this.accessToken = null;
     }
 
-    async request(path, options = {}) {
+    async request(path, options = {}, errStatus = 502) {
         let response;
 
         try {
@@ -19,16 +19,30 @@ class NibssClient {
         } catch (error) {
             throw new ExternalApiError(
                 'Network failure',
-                { cause: error }
+                { cause: error, status: 502}
             );
         }
     
-        const data = await response.json();
+
+        let data;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            throw new ExternalApiError(
+                'Invalid response from external API',
+                { cause: error, status: 502 }
+            );
+        }
     
         if (!response.ok) {
             throw new ExternalApiError(
                 data.message || 'Request failed',
-                { status: response.status }
+                {
+                    status: response.status === 404
+                    ? 404
+                    : errStatus
+                }
             );
         }
     
@@ -53,7 +67,7 @@ class NibssClient {
             this.accessToken = data.token;
         }
 
-        return this.accessToken
+        return this.accessToken;
     }
 
     async createAccount(requestBody) {
@@ -133,25 +147,52 @@ class NibssClient {
                 body: JSON.stringify(requestBody)                   }
         );
 
-        return data;                                        }
+        return data;
+    }
 
-    async createNin(requestBody) {                              const data = await this.request(                            '/api/insertNin',                                       {                                                           method: 'POST',
-                headers: {                                                  "Content-Type": "application/json",                     "Authorization": `Bearer ${this.getA
-ccessToken()}`                                                          },                                                      body: JSON.stringify(requestBody)                   }
+    async createNin(requestBody) {
+        const data = await this.request(
+            '/api/insertNin',
+            {                                   method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.getA
+ccessToken()}`
+                    
+                },                              
+                body: JSON.stringify(requestBody)
+            }
         );
-                                                                return data;                                        }
+        return data;
+    }
 
     async verifyBvn(requestBody) {
         const data = await this.request(
             '/api/validateBvn',
             {
                 headers: {
-                    "Content-Type": "application/json",                     "Authorization": `Bearer ${this.getAccessToken()}`  },                                                      body: JSON.stringify(requestBody)                   }                                                   );
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.getAccessToken()}`
+                },
+                body: JSON.stringify(requestBody)
+            }
+        );
         
-        return data
+        return data;
     }
 
-    async verifyNin(requestBody) {                              const data = await this.request(
-            '/api/validateNin',                                     {                                                           headers: {                                                  "Content-Type": "application/json",                     "Authorization": `Bearer ${this.getAccessToken()}`  },                                                      body: JSON.stringify(requestBody)                   }                                                   );                                                                                                              return data                                         }
-
+    async verifyNin(requestBody) {
+        const data = await this.request(
+            '/api/validateNin',
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.getAccessToken()}`
+                },
+                body: JSON.stringify(requestBody)
+            }
+        );
+        
+        return data;
+    }
 }
