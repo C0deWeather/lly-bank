@@ -5,8 +5,8 @@ function generateToken(id) {
     return jwt.sign(
         { sub: id },
         config.jwtSecret,
-        { expiresIn: "1h"}
-    };
+        { expiresIn: "1h" }
+    );
 }
 
 function verifyToken(token) {
@@ -19,11 +19,12 @@ function isTokenExpired(token) {
         return true;
     }
 
-    payload = jwt.decode(token);
+    const payload = jwt.decode(token);
 
     if (Date.now() >= payload.exp * 1000) {
         return true;
     }
     return false;
 }
-export { isTokenExpired };
+
+export { generateToken, verifyToken, isTokenExpired };

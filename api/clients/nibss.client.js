@@ -80,7 +80,7 @@ class NibssClient {
                 },
                 body: JSON.stringify(requestBody)
             });
-        return data;
+        return data.accountNumber;
     }
 
     async getName(accountNumber) {
@@ -88,7 +88,7 @@ class NibssClient {
             `/api/account/name-enquiry/${accountNumber}`,
             {
                 headers: {
-                    "Authorization": `Bearer ${this.getAccessToken()}`
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 }
             }
         );
@@ -102,7 +102,7 @@ class NibssClient {
             `/api/account/balance/${accountNumber}`,
             {
                 headers: {
-                    "Authorization": `Bearer ${this.getAccessToken()}`
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 }
             }
         );
@@ -113,10 +113,11 @@ class NibssClient {
     async initiateTransfer(requestBody) {
         const data = await this.request(
             '/api/transfer',
-            {                                                           method: 'POST',
+            {
+                method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.getAccessToken()}`
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 },
                 body: JSON.stringify(requestBody)
             }
@@ -128,8 +129,10 @@ class NibssClient {
     async getTransactionStatus(transactionId) {
         const data = await this.request(
             `/api/transaction/${transactionId}`,
-            headers: {
-                "Authorization": `Bearer ${this.getAccessToken()}`
+            {
+                headers: {
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
+                }
             }
         );
 
@@ -137,14 +140,16 @@ class NibssClient {
     }
 
     async createBvn(requestBody) {
-        const data = await this.request(                            '/api/insertBvn',
+        const data = await this.request(
+            '/api/insertBvn',
             {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.getAccessToken()}`
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 },
-                body: JSON.stringify(requestBody)                   }
+                body: JSON.stringify(requestBody)
+            }
         );
 
         return data;
@@ -153,13 +158,12 @@ class NibssClient {
     async createNin(requestBody) {
         const data = await this.request(
             '/api/insertNin',
-            {                                   method: 'POST',
+            {
+                method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.getA
-ccessToken()}`
-                    
-                },                              
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
+                },
                 body: JSON.stringify(requestBody)
             }
         );
@@ -172,12 +176,12 @@ ccessToken()}`
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.getAccessToken()}`
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 },
                 body: JSON.stringify(requestBody)
             }
         );
-        
+
         return data;
     }
 
@@ -187,12 +191,12 @@ ccessToken()}`
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.getAccessToken()}`
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 },
                 body: JSON.stringify(requestBody)
             }
         );
-        
+
         return data;
     }
 }

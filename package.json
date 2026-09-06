@@ -17,11 +17,12 @@
   "scripts": {
     "start": "node --env-file=.env ./api/server.js",
     "dev": "node --watch --env-file=.env ./api/server.js",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest"
+    "test": "node --env-file=.env --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.4"
   },
   "devDependencies": {
     "jest": "^30.5.0",

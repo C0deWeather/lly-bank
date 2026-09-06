@@ -3,7 +3,7 @@ import { isTokenExpired } from '../../api/utils/jwt.js';
 
 describe('jwt expiration', () => {
     test('should return true for invalid token', () => {
-        mock_token = null;
+        const mock_token = null;
         expect(isTokenExpired(mock_token)).toBe(true);
     });
 

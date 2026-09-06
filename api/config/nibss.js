@@ -1,7 +1,7 @@
 import config from './env.js';
 
 const nibss = {
-    baseUrl: 'https://nibssbyphoenix.onrender.com/api',
+    baseUrl: 'https://nibssbyphoenix.onrender.com',
     apiKey: config.nibssApiKey,
     apiSecret: config.nibssApiSecret
 }
