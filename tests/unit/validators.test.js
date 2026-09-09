@@ -2,8 +2,7 @@ import { describe, test, expect, vi } from 'vitest';
 import validateBody from '../../api/middleware/validators.js';
 
 const validBody = {
-    firstName: 'John',
-    lastName: 'Doe',
+    email: 'john@example.com',
     dob: '2000-01-01',
     bvn: '12345678901',
     nin: '98765432101',
@@ -41,7 +40,7 @@ describe('validateBody', () => {
     });
 
     test('throws when a required field is missing', () => {
-        for (const field of ['firstName', 'lastName', 'dob', 'password']) {
+        for (const field of ['email', 'dob', 'password']) {
             const body = { ...validBody };
             delete body[field];
             expect(() => run(body)).toThrow(/^invalid \w+$/);
@@ -49,7 +48,7 @@ describe('validateBody', () => {
     });
 
     test('throws when a field is an empty string', () => {
-        for (const field of ['firstName', 'lastName', 'dob', 'bvn', 'nin', 'password']) {
+        for (const field of ['email', 'dob', 'bvn', 'nin', 'password']) {
             const body = { ...validBody };
             body[field] = '';
             expect(() => run(body)).toThrow('cannot be empty');
@@ -57,24 +56,34 @@ describe('validateBody', () => {
     });
 
     test('throws when a field is whitespace only', () => {
-        expect(() => run({ ...validBody, firstName: '   ' })).toThrow('cannot be empty');
+        expect(() => run({ ...validBody, email: '   ' })).toThrow('cannot be empty');
     });
 
     test('throws when a field is not a string', () => {
-        for (const field of ['firstName', 'lastName', 'dob', 'bvn', 'nin', 'password']) {
+        for (const field of ['email', 'dob', 'bvn', 'nin', 'password']) {
             const body = { ...validBody };
             body[field] = 123;
             expect(() => run(body)).toThrow(/^invalid \w+$/);
         }
     });
 
+    test('drops client-provided names from the body', () => {
+        const result = run({
+            ...validBody,
+            firstName: 'John',
+            lastName: 'Doe'
+        });
+        expect(result.firstName).toBeUndefined();
+        expect(result.lastName).toBeUndefined();
+    });
+
     test('trims whitespace from provided fields', () => {
         const result = run({
             ...validBody,
-            firstName: '  John  ',
+            email: ' john@example.com ',
             bvn: ' 12345678901 '
         });
-        expect(result.firstName).toBe('John');
+        expect(result.email).toBe('john@example.com');
         expect(result.bvn).toBe('12345678901');
     });
 

@@ -15,15 +15,14 @@ function validateField(field, value) {
 }
 
 export default function validateBody(req, res, next) {
-    const { firstName, lastName, dob, bvn, nin, password } = req.body;
+    const { email, dob, bvn, nin, password } = req.body;
 
     if (bvn == null && nin == null) {
         throw new ValidationError("either bvn or nin is required");
     }
 
     req.body = {
-        firstName: validateField("name", firstName),
-        lastName: validateField("name", lastName),
+        email: validateField("email", email),
         dob: validateField("dob", dob),
         bvn: bvn == null ? undefined : validateField("bvn", bvn),
         nin: nin == null ? undefined : validateField("nin", nin),
