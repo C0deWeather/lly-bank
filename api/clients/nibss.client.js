@@ -200,3 +200,5 @@ class NibssClient {
         return data;
     }
 }
+
+export default new NibssClient(nibssConfig);
