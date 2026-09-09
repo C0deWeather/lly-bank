@@ -31,3 +31,14 @@ export default function validateBody(req, res, next) {
 
     next();
 }
+
+export function validateLoginBody(req, res, next) {
+    const { email, password } = req.body;
+
+    req.body = {
+        email: validateField("email", email),
+        password: validateField("password", password)
+    };
+
+    next();
+}

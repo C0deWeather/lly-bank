@@ -55,7 +55,7 @@ test('POST /accounts creates an account and stores a hashed password', async () 
     });
     expect(response.body.data.password).toBeUndefined();
 
-    const stored = await Account.findOne({ email: 'john@example.com' });
+    const stored = await Account.findOne({ email: 'john@example.com' }).select('+password');
     expect(stored).not.toBeNull();
     expect(stored.password).not.toBe('password123');
     expect(stored.password.startsWith('$2')).toBe(true);
