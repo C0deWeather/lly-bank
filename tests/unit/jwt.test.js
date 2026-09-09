@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { describe, test, expect } from 'vitest';
 import { isTokenExpired } from '../../api/utils/jwt.js';
 
 describe('jwt expiration', () => {

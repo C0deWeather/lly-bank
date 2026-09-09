@@ -1,5 +1,6 @@
 import express from 'express';
 import request from 'supertest';
+import { describe, test, expect } from 'vitest';
 import errorHandler from '../../api/middleware/error.handler.js';
 import ApiError, { ClientError, ValidationError } from '../../api/utils/errors.js';
 

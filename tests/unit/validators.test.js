@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { describe, test, expect, vi } from 'vitest';
 import validateBody from '../../api/middleware/validators.js';
 
 const validBody = {
@@ -79,7 +79,7 @@ describe('validateBody', () => {
     });
 
     test('calls next() on success', () => {
-        const next = jest.fn();
+        const next = vi.fn();
         validateBody({ body: validBody }, {}, next);
         expect(next).toHaveBeenCalledTimes(1);
     });
