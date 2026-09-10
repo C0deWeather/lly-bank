@@ -41,7 +41,7 @@ beforeEach(async () => {
 });
 
 test('POST /accounts creates an account and stores a hashed password', async () => {
-    const response = await request(app).post('/accounts').send(validBody);
+    const response = await request(app).post('/api/accounts').send(validBody);
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toMatchObject({
@@ -65,10 +65,10 @@ test('POST /accounts creates an account using nin when bvn is absent', async () 
     const { bvn, ...body } = validBody;
     body.nin = '98765432101';
 
-    const response = await request(app).post('/accounts').send(body);
+    const response = await request(app).post('/api/accounts').send(body);
 
     expect(response.statusCode).toBe(201);
-    expect(nibss.verifyNin).toHaveBeenCalledWith('98765432101');
+    expect(nibss.verifyNin).toHaveBeenCalledWith({ nin: '98765432101' });
     expect(nibss.verifyBvn).not.toHaveBeenCalled();
     expect(nibss.createAccount).toHaveBeenCalledWith({
         kycType: 'nin',
@@ -82,13 +82,13 @@ test('POST /accounts creates an account using nin when bvn is absent', async () 
 });
 
 test('POST /accounts prefers bvn when both bvn and nin are provided', async () => {
-    const response = await request(app).post('/accounts').send({
+    const response = await request(app).post('/api/accounts').send({
         ...validBody,
         nin: '98765432101'
     });
 
     expect(response.statusCode).toBe(201);
-    expect(nibss.verifyBvn).toHaveBeenCalledWith('12345678901');
+    expect(nibss.verifyBvn).toHaveBeenCalledWith({ bvn: '12345678901' });
     expect(nibss.verifyNin).not.toHaveBeenCalled();
     expect(nibss.createAccount).toHaveBeenCalledWith({
         kycType: 'bvn',
@@ -104,7 +104,7 @@ test('POST /accounts prefers bvn when both bvn and nin are provided', async () =
 test('POST /accounts rejects a body without bvn or nin', async () => {
     const { bvn, ...body } = validBody;
 
-    const response = await request(app).post('/accounts').send(body);
+    const response = await request(app).post('/api/accounts').send(body);
 
     expect(response.statusCode).toBe(422);
     expect(response.body.error.message).toBe('either bvn or nin is required');
@@ -112,9 +112,9 @@ test('POST /accounts rejects a body without bvn or nin', async () => {
 });
 
 test('POST /accounts returns 409 for a duplicate email', async () => {
-    await request(app).post('/accounts').send(validBody);
+    await request(app).post('/api/accounts').send(validBody);
 
-    const response = await request(app).post('/accounts').send({
+    const response = await request(app).post('/api/accounts').send({
         ...validBody,
         bvn: '12345678902'
     });
@@ -127,7 +127,7 @@ test('POST /accounts returns 409 for a duplicate email', async () => {
 test('POST /accounts returns 502 and stores nothing when nibss verification fails', async () => {
     nibss.verifyBvn.mockRejectedValue(new ExternalApiError('bvn not found', { status: 502 }));
 
-    const response = await request(app).post('/accounts').send(validBody);
+    const response = await request(app).post('/api/accounts').send(validBody);
 
     expect(response.statusCode).toBe(502);
     expect(await Account.countDocuments()).toBe(0);

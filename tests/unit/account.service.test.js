@@ -39,14 +39,14 @@ describe('createAccount', () => {
     test('verifies bvn when provided', async () => {
         await createAccount(validInput);
 
-        expect(nibss.verifyBvn).toHaveBeenCalledWith(validInput.bvn);
+        expect(nibss.verifyBvn).toHaveBeenCalledWith({ bvn: validInput.bvn });
         expect(nibss.verifyNin).not.toHaveBeenCalled();
     });
 
     test('falls back to nin when bvn is not provided', async () => {
         await createAccount({ ...validInput, bvn: undefined, nin: '98765432101' });
 
-        expect(nibss.verifyNin).toHaveBeenCalledWith('98765432101');
+        expect(nibss.verifyNin).toHaveBeenCalledWith({ nin: '98765432101' });
         expect(nibss.verifyBvn).not.toHaveBeenCalled();
     });
 

@@ -28,6 +28,7 @@ export default function errorHandler(err, req, res, next) {
         status = 422;
     }
 
+    console.error(err);
     res.status(status).json({
         error: {
             status,

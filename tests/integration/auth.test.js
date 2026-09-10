@@ -43,11 +43,11 @@ beforeEach(async () => {
     nibss.verifyBvn.mockResolvedValue({ firstName: 'John', lastName: 'Doe' });
     nibss.createAccount.mockResolvedValue('0123456789');
 
-    await request(app).post('/accounts').send(signupBody);
+    await request(app).post('/api/accounts').send(signupBody);
 });
 
 test('POST /auth/login returns a valid token for correct credentials', async () => {
-    const response = await request(app).post('/auth/login').send(loginBody);
+    const response = await request(app).post('/api/auth/login').send(loginBody);
 
     expect(response.statusCode).toBe(200);
     expect(typeof response.body.data.token).toBe('string');
@@ -58,7 +58,7 @@ test('POST /auth/login returns a valid token for correct credentials', async () 
 });
 
 test('POST /auth/login rejects a wrong password', async () => {
-    const response = await request(app).post('/auth/login').send({
+    const response = await request(app).post('/api/auth/login').send({
         ...loginBody,
         password: 'wrongpassword'
     });
@@ -67,7 +67,7 @@ test('POST /auth/login rejects a wrong password', async () => {
 });
 
 test('POST /auth/login rejects an unknown email', async () => {
-    const response = await request(app).post('/auth/login').send({
+    const response = await request(app).post('/api/auth/login').send({
         ...loginBody,
         email: 'nobody@example.com'
     });
@@ -80,7 +80,7 @@ test('POST /auth/login rejects a missing email or password', async () => {
         const body = { ...loginBody };
         delete body[field];
 
-        const response = await request(app).post('/auth/login').send(body);
+        const response = await request(app).post('/api/auth/login').send(body);
 
         expect(response.statusCode).toBe(422);
     }
@@ -92,7 +92,7 @@ test('POST /auth/login rejects an empty or non-string email or password', async 
             const body = { ...loginBody };
             body[field] = value;
 
-            const response = await request(app).post('/auth/login').send(body);
+            const response = await request(app).post('/api/auth/login').send(body);
 
             expect(response.statusCode).toBe(422);
         }

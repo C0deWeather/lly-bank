@@ -8,6 +8,7 @@ export async function createAccount(data) {
         kycID: data.bvn ?? data.nin,
         dob: data.dob
     });
+    console.log(JSON.stringify(kycRecord));
     const accountData = {
         firstName: kycRecord.firstName,
         lastName: kycRecord.lastName,
@@ -27,5 +28,7 @@ export async function createAccount(data) {
 }
 
 async function verifyIdentity(data) {
-    return data.bvn == null ? nibss.verifyNin(data.nin) : nibss.verifyBvn(data.bvn);
+    return data.bvn == null
+        ? nibss.verifyNin({ nin: data.nin })
+        : nibss.verifyBvn({ bvn: data.bvn });
 }

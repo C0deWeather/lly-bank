@@ -18,7 +18,7 @@ class NibssClient {
             );
         } catch (error) {
             throw new ExternalApiError(
-                'Network failure',
+                'nibss could not complete the request',
                 { cause: error, status: 502}
             );
         }
@@ -36,11 +36,12 @@ class NibssClient {
         }
     
         if (!response.ok) {
+            console.error("nibss error status: ", response.status);
             throw new ExternalApiError(
                 data.message || 'Request failed',
                 {
-                    status: response.status === 404
-                    ? 404
+                    status: [400, 404, 409].includes(response.status)
+                    ? response.status
                     : errStatus
                 }
             );
@@ -76,11 +77,12 @@ class NibssClient {
             {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${await this.getAccessToken()}`
                 },
                 body: JSON.stringify(requestBody)
             });
-        return data.accountNumber;
+        return data.account.accountNumber;
     }
 
     async getName(accountNumber) {
@@ -174,6 +176,7 @@ class NibssClient {
         const data = await this.request(
             '/api/validateBvn',
             {
+                method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${await this.getAccessToken()}`
@@ -182,13 +185,14 @@ class NibssClient {
             }
         );
 
-        return data;
+        return data.data;
     }
 
     async verifyNin(requestBody) {
         const data = await this.request(
             '/api/validateNin',
             {
+                method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${await this.getAccessToken()}`
@@ -197,7 +201,7 @@ class NibssClient {
             }
         );
 
-        return data;
+        return data.data;
     }
 }
 
