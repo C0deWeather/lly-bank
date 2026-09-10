@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import config from "../config/env.js";
 
-function generateToken(id) {
+function generateToken(id, role = 'customer') {
     return jwt.sign(
-        { sub: id },
+        { sub: id, role },
         config.jwtSecret,
         { expiresIn: "1h" }
     );

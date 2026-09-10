@@ -42,3 +42,30 @@ export function validateLoginBody(req, res, next) {
 
     next();
 }
+
+export function validateBvnInsertBody(req, res, next) {
+    const { bvn, firstName, lastName, dob, phone } = req.body;
+
+    req.body = {
+        bvn: validateField("bvn", bvn),
+        firstName: validateField("firstName", firstName),
+        lastName: validateField("lastName", lastName),
+        dob: validateField("dob", dob),
+        phone: validateField("phone", phone)
+    };
+
+    next();
+}
+
+export function validateNinInsertBody(req, res, next) {
+    const { nin, firstName, lastName, dob } = req.body;
+
+    req.body = {
+        nin: validateField("nin", nin),
+        firstName: validateField("firstName", firstName),
+        lastName: validateField("lastName", lastName),
+        dob: validateField("dob", dob)
+    };
+
+    next();
+}

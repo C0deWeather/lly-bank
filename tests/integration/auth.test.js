@@ -55,6 +55,24 @@ test('POST /auth/login returns a valid token for correct credentials', async () 
     const payload = verifyToken(response.body.data.token);
     const account = await Account.findOne({ email: 'john@example.com' });
     expect(payload.sub).toBe(String(account._id));
+    expect(payload.role).toBe('customer');
+});
+
+test('POST /auth/login grants the admin role to the admin email', async () => {
+    nibss.createAccount.mockResolvedValueOnce('9876543210');
+    await request(app).post('/api/accounts').send({
+        ...signupBody,
+        email: process.env.ADMIN_EMAIL,
+        bvn: '12345678902'
+    });
+
+    const response = await request(app).post('/api/auth/login').send({
+        email: process.env.ADMIN_EMAIL,
+        password: 'password123'
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(verifyToken(response.body.data.token).role).toBe('admin');
 });
 
 test('POST /auth/login rejects a wrong password', async () => {

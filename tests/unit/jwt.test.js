@@ -1,6 +1,24 @@
 import jwt from 'jsonwebtoken';
 import { describe, test, expect } from 'vitest';
-import { isTokenExpired } from '../../api/utils/jwt.js';
+import { isTokenExpired, generateToken } from '../../api/utils/jwt.js';
+import config from '../../api/config/env.js';
+
+describe('generateToken', () => {
+    test('includes the role claim in the payload', () => {
+        const token = generateToken('some-id', 'admin');
+
+        const payload = jwt.verify(token, config.jwtSecret);
+        expect(payload.sub).toBe('some-id');
+        expect(payload.role).toBe('admin');
+    });
+
+    test('defaults the role to customer', () => {
+        const token = generateToken('some-id');
+
+        const payload = jwt.verify(token, config.jwtSecret);
+        expect(payload.role).toBe('customer');
+    });
+});
 
 describe('jwt expiration', () => {
     test('should return true for invalid token', () => {

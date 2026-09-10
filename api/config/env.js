@@ -6,6 +6,7 @@ const config = {
     nibssBaseUrl: process.env.NIBSS_BASE_URL,
     nibssApiKey: process.env.NIBSS_API_KEY,
     nibssApiSecret: process.env.NIBSS_API_SECRET,
+    adminEmail: process.env.ADMIN_EMAIL || null,
     mongodbUri: process.env.MONGODB_URI
 };
 
