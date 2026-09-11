@@ -32,15 +32,33 @@ const accountSchema = new mongoose.Schema(
         },
         bvn: {
             type: String,
-            unique: true
         },
         nin: {
             type: String,
-            unique: true
         }
     },
     {
         timestamps: true
+    }
+);
+
+accountSchema.index(
+    { bvn: 1 },
+    {
+        unique: true,
+        partialFilterExpression: {
+            bvn: { $type: 'string' }
+        }
+    }
+);
+
+accountSchema.index(
+    { nin: 1 },
+    {
+        unique: true,
+        partialFilterExpression: {
+            nin: { $type: 'string' }
+        }
     }
 );
 
