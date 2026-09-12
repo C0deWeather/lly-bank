@@ -154,7 +154,7 @@ class NibssClient {
             }
         );
 
-        return data;
+        return data.data;
     }
 
     async createNin(requestBody) {
@@ -169,7 +169,7 @@ class NibssClient {
                 body: JSON.stringify(requestBody)
             }
         );
-        return data;
+        return data.response;
     }
 
     async verifyBvn(requestBody) {

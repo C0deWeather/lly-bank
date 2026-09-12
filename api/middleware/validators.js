@@ -57,6 +57,31 @@ export function validateBvnInsertBody(req, res, next) {
     next();
 }
 
+export function validateTransferBody(req, res, next) {
+    const { to, amount } = req.body;
+
+    const recipientAccount = validateField("to", to);
+
+    let transferAmount = amount;
+    if (typeof transferAmount === "string") {
+        transferAmount = transferAmount.trim();
+    }
+    if (transferAmount === "" || transferAmount == null) {
+        throw new ValidationError("amount field cannot be empty");
+    }
+    const parsed = Number(transferAmount);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+        throw new ValidationError("amount must be a positive number");
+    }
+
+    req.body = {
+        to: recipientAccount,
+        amount: parsed
+    };
+
+    next();
+}
+
 export function validateNinInsertBody(req, res, next) {
     const { nin, firstName, lastName, dob } = req.body;
 
