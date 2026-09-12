@@ -1,7 +1,12 @@
 import Account from '../models/account.model.js';
 import nibss from '../clients/nibss.client.js';
+import { ClientError } from '../utils/errors.js';
 
 export async function createAccount(data) {
+    if (await Account.exists({ email: data.email })) {
+        throw new ClientError('an account with this email already exists', { status: 409 });
+    }
+
     const kycRecord = await verifyIdentity(data);
     const accountNumber = await nibss.createAccount({
         kycType: data.bvn == null ? 'nin' : 'bvn',
